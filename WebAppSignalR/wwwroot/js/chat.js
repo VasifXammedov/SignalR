@@ -44,3 +44,24 @@ connection.start().then(function () {
 }).catch(function (err) {
     return console.error(err.toString());
 });
+
+let enterUserForm = document.getElementById("enterUserForm");
+let leaveBtn = document.getElementById("leaveBtn");
+
+
+enterUserForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    let username = document.getElementById("username").value;
+    let selectedGroup = document.getElementById("selectedGroup").value;
+    if (username != "" && selectedGroup != "") {
+        document.getElementById("enterRow").classList.add("d-none");
+        document.getElementById("chatRow").classList.remove("d-none");
+
+    }
+})
+
+leaveBtn.addEventListener("click", function () {
+    document.getElementById("enterRow").classList.remove("d-none");
+    document.getElementById("chatRow").classList.add("d-none");
+
+})
