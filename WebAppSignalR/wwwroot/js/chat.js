@@ -1,6 +1,7 @@
 ﻿
 "use strict";
 
+
 //var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 ////Disable send button until connection is established
@@ -40,7 +41,13 @@ connection.on("ReceiveMessage", function (user, message) {
 });
 
 connection.start().then(function () {
-
+    if (localStorage.getItem("user") !== null) {
+        ShowChat();
+        let group = JSON.parse(localStorage.getItem("user")).group;
+        connection.invoke("EnterGroup", group);
+    } else {
+        document.getElementById("enterRow").classList.remove("d-none");
+    }
 }).catch(function (err) {
     return console.error(err.toString());
 });
@@ -56,7 +63,14 @@ enterUserForm.addEventListener("submit", function (e) {
     if (username != "" && selectedGroup != "") {
         document.getElementById("enterRow").classList.add("d-none");
         document.getElementById("chatRow").classList.remove("d-none");
+        ShowChat();
 
+        let user = {
+            username: username,
+            group: selectedGroup
+        }
+        localStorage.setItem("user", JSON.stringify(user));
+        connection.invoke("EnterGroup", selectedGroup);
     }
 })
 
@@ -64,4 +78,14 @@ leaveBtn.addEventListener("click", function () {
     document.getElementById("enterRow").classList.remove("d-none");
     document.getElementById("chatRow").classList.add("d-none");
 
+    let group = JSON.parse(localStorage.getItem("user")).group;
+    connection.invoke("LeaveGroup", group);
+
+    localStorage.removeItem("user");
 })
+
+function ShowChat() {
+    document.getElementById("enterRow").classList.add("d-none");
+    document.getElementById("chatRow").classList.remove("d-none");
+
+}
